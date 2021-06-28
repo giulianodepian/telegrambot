@@ -23,12 +23,11 @@ assistant = AssistantV2(
 )
 
 text = ""
+confirmation_awaiting = False
 
 
 speech_to_text.set_service_url("https://api.us-south.speech-to-text.watson.cloud.ibm.com/instances/4580bff0-de17-4dcd-a72b-824e5bebe119")
 assistant.set_service_url("https://api.us-south.assistant.watson.cloud.ibm.com/instances/89d698b5-cc02-43df-ae51-6efab4ac629c")
-confirmation = True
-confirmation_awaiting = False
 
 session_response = assistant.create_session(
     assistant_id="a5482507-c0fc-4d95-9ada-ccc695605c05").get_result()
@@ -77,19 +76,38 @@ class StrategyNotConfirmation(Strategy):
 
 
 class Bot:
-    def __init__(self):
-        self.strategy = StrategyConfirmation()
+    def __init__(self, strategy):
+        self.strategy = strategy
 
     def useStrategy(self, message):
         self.strategy.confirmation(message)
 
+    def setStrategy(self, strategy):
+        self.strategy = strategy
 
-b = Bot()
+    def getStrategy(self):
+        return self.strategy
+
+
+confirm = StrategyConfirmation()
+notConfirm = StrategyNotConfirmation()
+b = Bot(notConfirm)
+
+
+@bot.message_handler(commands=['cambiarmodo'])
+def cambiarEstrategia(message):
+    if isinstance(b.getStrategy(), StrategyNotConfirmation):
+        bot.send_message(message.chat.id, "Cambiado a modo CONFIRMACION")
+        b.setStrategy(confirm)
+    else:
+        bot.send_message(message.chat.id, "Cambiado a modo NO CONFIRMACION")
+        b.setStrategy(notConfirm)
 
 
 @bot.message_handler(content_types=['voice'])  # Manejador de msg voz
 def voice(message):
-    b.useStrategy(message)
+    if confirmation_awaiting is False:
+        b.useStrategy(message)
 
 @bot.message_handler(func=lambda message: confirmation_awaiting == True, commands=['si'])
 def si(message):
@@ -110,7 +128,6 @@ def no(message):
     global confirmation_awaiting
     confirmation_awaiting = False
     bot.send_message(message.chat.id, "Envio de mensaje cancelado")
-    pass
 
 
 bot.polling()  # Chequea mensajes continuamente
