@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from ibm_watson import SpeechToTextV1
 from ibm_watson import AssistantV2
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+import requests
+import json
 
 load_dotenv()
 API_KEY = environ.get("API_KEY")
@@ -31,6 +33,16 @@ assistant.set_service_url("https://api.us-south.assistant.watson.cloud.ibm.com/i
 
 session_response = assistant.create_session(
     assistant_id="a5482507-c0fc-4d95-9ada-ccc695605c05").get_result()
+
+
+def enviar_post(agroresponse):
+    argumentos = str(agroresponse["output"]["generic"][0]["text"]).split()
+    nueva_accion = {
+        "comando": argumentos[0],
+        "producto_kg": argumentos[1],
+        "lote": argumentos[2]
+    }
+    requests.post("http://127.0.0.1:5000/req", json=nueva_accion)
 
 
 class Strategy:
@@ -71,8 +83,7 @@ class StrategyNotConfirmation(Strategy):
             'text': str(text["results"][0]["alternatives"][0]["transcript"])
             }
             ).get_result()
-        bot.send_message(message.chat.id, str(text["results"][0]["alternatives"][0]["transcript"]))
-        bot.send_message(message.chat.id, str(agroresponse["output"]["generic"][0]["text"]))
+        enviar_post(agroresponse)
 
 
 class Bot:
@@ -103,7 +114,6 @@ def cambiarEstrategia(message):
         bot.send_message(message.chat.id, "Cambiado a modo NO CONFIRMACION")
         b.setStrategy(notConfirm)
 
-
 @bot.message_handler(content_types=['voice'])  # Manejador de msg voz
 def voice(message):
     if confirmation_awaiting is False:
@@ -121,7 +131,7 @@ def si(message):
         'text': str(text["results"][0]["alternatives"][0]["transcript"])
         }
         ).get_result()
-    bot.send_message(message.chat.id, str(agroresponse["output"]["generic"][0]["text"]))
+    enviar_post(agroresponse)
 
 @bot.message_handler(func=lambda message: confirmation_awaiting == True, commands=['no'])
 def no(message):
