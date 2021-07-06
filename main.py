@@ -40,8 +40,10 @@ def enviar_post(agroresponse):
     nueva_accion = {
         "comando": argumentos[0],
         "producto_kg": argumentos[1],
-        "lote": argumentos[2]
+        "lote": argumentos[len(argumentos) - 1]
     }
+    for x in range(2, len(argumentos) - 1):
+        nueva_accion["producto_kg"] = " ".join([nueva_accion["producto_kg"], argumentos[x]])
     requests.post("http://127.0.0.1:5000/req", json=nueva_accion)
 
 
