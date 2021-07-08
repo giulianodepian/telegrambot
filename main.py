@@ -5,7 +5,6 @@ from ibm_watson import SpeechToTextV1
 from ibm_watson import AssistantV2
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import requests
-import json
 
 load_dotenv()
 TELEBOT_KEY = environ.get("TELEBOT_KEY")
