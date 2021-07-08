@@ -8,3 +8,5 @@
 ## Notas
 Puedes encontrar el bot en t.me/agrobotGDP_bot para utilizarlo
 Debes correr la restapi https://github.com/giulianodepian/restapi
+## Funcionamiento
+El bot solo admite mensajes de voz y el comando /cambiarmodo para cambiar de "no confirmacion" a "confirmacion" y viceversa
