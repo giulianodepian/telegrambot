@@ -8,4 +8,3 @@
 ## Notas
 Puedes encontrar el bot en t.me/agrobotGDP_bot para utilizarlo
 Debes correr la restapi https://github.com/giulianodepian/restapi
-
