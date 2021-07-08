@@ -8,17 +8,17 @@ import requests
 import json
 
 load_dotenv()
-API_KEY = environ.get("API_KEY")
-bot = telebot.TeleBot(API_KEY)  # Creamos el bot
+TELEBOT_KEY = environ.get("TELEBOT_KEY")
+bot = telebot.TeleBot(TELEBOT_KEY)  # Creamos el bot
 
-IBM_KEY = environ.get("IBM_KEY")
-authenticator = IAMAuthenticator(IBM_KEY)
+Speech_KEY = environ.get("Speech_KEY")
+authenticator = IAMAuthenticator(Speech_KEY)
 speech_to_text = SpeechToTextV1(
     authenticator=authenticator
 )
 
-IBM_KEY2 = environ.get("IBM_KEY2")
-authenticator = IAMAuthenticator(IBM_KEY2)
+ASSISTANT_KEY = environ.get("ASSISTANT_KEY")
+authenticator = IAMAuthenticator(ASSISTANT_KEY)
 assistant = AssistantV2(
     version='2020-09-24',
     authenticator=authenticator
