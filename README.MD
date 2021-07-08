@@ -11,12 +11,12 @@ Debes correr la restapi https://github.com/giulianodepian/restapi
 ## Funcionamiento
 El bot solo admite mensajes de voz y el comando /cambiarmodo para cambiar de "no confirmacion" a "confirmacion" y viceversa
 ## Mensajes De Voz
-Coseche (Numero) kilos en el lote (Numero)
-Aplique (Producto) en el lote (Numero)
-Identifique (Plaga) en el lote (numero)
-#Productos
-Cloruro de sodio
-#Plagas
-Acaros
-Hongos
-Insectos
+1. Coseche (Numero) kilos en el lote (Numero)
+2. Aplique (Producto) en el lote (Numero)
+3. Identifique (Plaga) en el lote (numero)
+### Productos
+1. Cloruro de sodio
+### Plagas
+1. Acaros
+2. Hongos
+3. Insectos
