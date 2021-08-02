@@ -66,6 +66,9 @@ class StrategyConfirmation(Strategy):
         bot.send_message(message.chat.id, str(text["results"][0]["alternatives"][0]["transcript"]))
         bot.send_message(message.chat.id, "Es este el mensaje que enviaste? (contesta /si o /no)")
 
+    def changeStrategy(self):
+        return StrategyNotConfirmation()
+
 
 class StrategyNotConfirmation(Strategy):
     def confirmation(self, message):
@@ -86,6 +89,9 @@ class StrategyNotConfirmation(Strategy):
             ).get_result()
         enviar_post(agroresponse)
 
+    def changeStrategy(self):
+        return StrategyConfirmation()
+
 
 class Bot:
     def __init__(self, strategy):
@@ -94,26 +100,19 @@ class Bot:
     def useStrategy(self, message):
         self.strategy.confirmation(message)
 
-    def setStrategy(self, strategy):
-        self.strategy = strategy
+    def setStrategy(self):
+        self.strategy = self.strategy.changeStrategy()
 
     def getStrategy(self):
         return self.strategy
 
 
-confirm = StrategyConfirmation()
-notConfirm = StrategyNotConfirmation()
-b = Bot(notConfirm)
+b = Bot(StrategyNotConfirmation())
 
 
 @bot.message_handler(commands=['cambiarmodo'])
 def cambiarEstrategia(message):
-    if isinstance(b.getStrategy(), StrategyNotConfirmation):
-        bot.send_message(message.chat.id, "Cambiado a modo CONFIRMACION")
-        b.setStrategy(confirm)
-    else:
-        bot.send_message(message.chat.id, "Cambiado a modo NO CONFIRMACION")
-        b.setStrategy(notConfirm)
+        b.setStrategy()
 
 @bot.message_handler(content_types=['voice'])  # Manejador de msg voz
 def voice(message):
