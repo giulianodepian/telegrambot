@@ -69,6 +69,9 @@ class StrategyConfirmation(Strategy):
     def changeStrategy(self):
         return StrategyNotConfirmation()
 
+    def getStrategyName(self):
+        return 'MODO CONFIRMACION'
+
 
 class StrategyNotConfirmation(Strategy):
     def confirmation(self, message):
@@ -92,6 +95,9 @@ class StrategyNotConfirmation(Strategy):
     def changeStrategy(self):
         return StrategyConfirmation()
 
+    def getStrategyName(self):
+        return 'MODO NO CONFIRMACION'
+
 
 class Bot:
     def __init__(self, strategy):
@@ -104,8 +110,7 @@ class Bot:
         self.strategy = self.strategy.changeStrategy()
 
     def getStrategy(self):
-        return self.strategy
-
+        return self.strategy.getStrategyName()
 
 b = Bot(StrategyNotConfirmation())
 
@@ -113,6 +118,7 @@ b = Bot(StrategyNotConfirmation())
 @bot.message_handler(commands=['cambiarmodo'])
 def cambiarEstrategia(message):
         b.setStrategy()
+        bot.send_message(message.chat.id, "Cambiado a " + b.getStrategy())
 
 @bot.message_handler(content_types=['voice'])  # Manejador de msg voz
 def voice(message):
