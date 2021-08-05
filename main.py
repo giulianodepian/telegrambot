@@ -112,6 +112,7 @@ class Bot:
     def getStrategy(self):
         return self.strategy.getStrategyName()
 
+
 b = Bot(StrategyNotConfirmation())
 
 
@@ -120,10 +121,14 @@ def cambiarEstrategia(message):
         b.setStrategy()
         bot.send_message(message.chat.id, "Cambiado a " + b.getStrategy())
 
+
 @bot.message_handler(content_types=['voice'])  # Manejador de msg voz
 def voice(message):
     if confirmation_awaiting is False:
         b.useStrategy(message)
+    else:
+        bot.send_message(message.chat.id, "No se esperaba un audio")
+
 
 @bot.message_handler(func=lambda message: confirmation_awaiting == True, commands=['si'])
 def si(message):
@@ -139,11 +144,17 @@ def si(message):
         ).get_result()
     enviar_post(agroresponse)
 
+
 @bot.message_handler(func=lambda message: confirmation_awaiting == True, commands=['no'])
 def no(message):
     global confirmation_awaiting
     confirmation_awaiting = False
     bot.send_message(message.chat.id, "Envio de mensaje cancelado")
+
+
+@bot.message_handler(content_types=['text'])
+def text(message):
+    bot.send_message(message.chat.id, "No se esperaba un texto")
 
 
 bot.polling()  # Chequea mensajes continuamente
